@@ -45,3 +45,9 @@ bower.json
 
 # Ignore RubyMine ( JetBrains ) config
 /.idea
+
+# Ignore coverage reports
+/spec/coverage/
+
+# Ignore compiled fixture files
+/spec/fixtures/public

@@ -13,25 +13,31 @@ module LocalePack
       end
     end
 
-    attr_reader :name, :file_digest, :file_extension, :file_name, :file_path
+    attr_accessor :name, :digest, :file_name
     def initialize(options = {})
-      @name           = options[:name]
-      @file_digest    = options[:file_digest]
-      @file_name      = "#{options[:name]}-#{options[:file_digest]}"
-      @file_path      = "#{LocalePack.config.output_path}/#{@file_name}.json"
+      @name      = options[:name]
+      @digest    = options[:digest]
+      @file_name = "#{options[:name]}-#{options[:digest]}.json"
     end
 
     def path
-      "/locale_packs/#{self.file_name}.json"
+      "/locale_packs/#{self.file_name}"
+    end
+
+    def ==(another_pack)
+      self.to_h == another_pack.to_h
+    end
+
+    def to_h
+      {
+        name:      self.name,
+        digest:    self.digest,
+        file_name: self.file_name,
+      }
     end
 
     def to_json
-      {
-          name:        self.name,
-          file_digest: self.file_digest,
-          file_name:   self.file_name,
-          file_path:   self.file_path
-      }.to_json
+      self.to_h.to_json
     end
   end
 end

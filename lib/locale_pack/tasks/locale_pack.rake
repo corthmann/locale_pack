@@ -1,45 +1,29 @@
 require 'rake'
+require 'locale_pack/models/manifest'
+require 'locale_pack/models/pack_file'
 
 namespace :locale_pack do
-  desc 'Compile locale packs'
-  task :compile, [:pack_name] => :environment do |_, args|
-    raise "Missing 'pack_name' parameter" if (args['pack_name'].nil? || args['pack_name'].empty?)
-    pack_name = args['pack_name'].to_sym
-
-
-    manifest = {}
-    # Precompile locale packs
-    Dir[Rails.root.join('config','locale_packs', '**','*.{yml}').to_s].each do |locale_pack_path|
-      pack = {}
-      # Iterate files referenced by locale packs.
-      YAML.load_file(locale_pack_path)[:files].each do |locale_file_path|
-        Dir[Rails.root.join('config', 'locales', locale_file_path).to_s].each do |translation_file_path|
-          pack.deep_merge!(YAML.load_file(translation_file_path))
-        end
+  namespace :compile do
+    desc 'Compile all locale packs'
+    task :all, [] => :environment do
+      manifest = LocalePack::Manifest.new
+      LocalePack::PackFile.find_all.each do |pack_file|
+        pack_file.save
+        manifest.add(pack_file.pack)
       end
-      # Write precompiled locale pack
-      pack_data      = pack.to_json
-      pack_digest    = Digest::SHA256.hexdigest(pack_data)
-      pack_name      = File.basename(locale_pack_path, '.yml')
-      pack_file_name = "#{pack_name}-#{pack_digest}"
-      pack_file_path = "#{Rails.root}/public/locale_packs/#{pack_file_name}.json"
-      manifest[pack_name] = {
-          file_digest: pack_digest,
-          file_extension: 'json',
-          file_name: pack_file_name,
-          file_path: pack_file_path,
-          name: pack_name
-      }
-      f = File.new(pack_file_path, 'w')
-      f.write(pack_data)
-      f.close
+      manifest.save
     end
-    # Write manifest
-    manifest_file = File.new(File.join(Rails.root, 'public', 'locale_pack_manifest.json'), 'w')
-    manifest_file.write(manifest.to_json)
-    manifest_file.close
 
-
-
+    desc 'Compile the locale pack with the given name'
+    task :one, [:name] => :environment do |_, args|
+      name = args['name'].to_sym
+      raise ArgumentError, 'Missing argument "name"' unless name && !name.empty?
+      manifest = LocalePack::Manifest.new
+      manifest.load!
+      pack_file = LocalePack::PackFile.find_by_name(name)
+      pack_file.save
+      manifest.add(pack_file.pack)
+      manifest.save
+    end
   end
 end

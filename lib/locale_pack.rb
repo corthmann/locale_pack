@@ -1,17 +1,20 @@
 require 'locale_pack/version'
 require 'locale_pack/railtie' if defined?(Rails)
 require 'locale_pack/models/manifest'
+require 'locale_pack/models/pack'
+require 'locale_pack/models/pack_file'
 
 module LocalePack
   class Config
 
-    attr_accessor :output_path, :config_path, :locale_paths, :manifest_path
+    attr_accessor :output_path, :config_path, :locale_path
 
     def initialize
-      @config_path   = Rails.root.join('config', 'locale_pack')
-      @locale_paths  = [Rails.root.join('config', 'locales')]
-      @manifest_path = Rails.root.join('public')
-      @output_path   = Rails.root.join('public', 'locale_packs')
+      if defined?(Rails)
+        @config_path   = Rails.root.join('config', 'locale_pack')
+        @locale_path   = Rails.root.join('config', 'locales')
+        @output_path   = Rails.root.join('public', 'locale_packs')
+      end
     end
   end
 
