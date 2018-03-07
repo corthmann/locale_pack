@@ -49,6 +49,7 @@ GEM
     yard (0.9.12)
 
 PLATFORMS
+  ruby
   x64-mingw32
 
 DEPENDENCIES

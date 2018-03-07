@@ -58,7 +58,7 @@ module LocalePack
     private
 
     def compiled_file_path
-      File.join(LocalePack.config.output_path, "#{self.name}-#{self.digest}.yml")
+      File.join(LocalePack.config.output_path, "#{self.name}-#{self.digest}.json")
     end
 
     def data

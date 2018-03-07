@@ -12,11 +12,11 @@ module LocalePack
     end
 
     def add(pack)
-      @packs[pack.name] = pack.to_json
+      @packs[pack.name] = pack.to_h
     end
 
     def [](name)
-      raise ArgumentError, "Locale Pack '#{name}' not found" unless self.packs.key?(name)
+      raise ArgumentError, "Locale Pack '#{name}' not found" unless self.packs.key?(name.to_sym)
       self.packs[name.to_sym]
     end
 
