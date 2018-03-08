@@ -27,7 +27,7 @@ module LocalePack
     end
 
     def save
-      File.open(File.join(LocalePack.config.output_path, generate_manifest_path), 'w') do |f|
+      File.open(find_directory_manifest(LocalePack.config.output_path), 'w') do |f|
         f.write(self.packs.to_json)
       end
       true
