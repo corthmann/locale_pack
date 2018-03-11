@@ -15,6 +15,10 @@ module LocalePack
       @packs[pack.name] = pack.to_h
     end
 
+    def remove(pack)
+      @packs.delete(pack.name)
+    end
+
     def [](name)
       raise ArgumentError, "Locale Pack '#{name}' not found" unless self.packs.key?(name.to_sym)
       self.packs[name.to_sym]

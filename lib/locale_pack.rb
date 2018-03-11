@@ -27,6 +27,10 @@ module LocalePack
     @@manifest ||= LocalePack::Manifest.new
   end
 
+  def self.listeners
+    @@listeners ||= []
+  end
+
   def self.configure
     yield self.config
   end

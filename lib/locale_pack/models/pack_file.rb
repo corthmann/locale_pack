@@ -39,10 +39,9 @@ module LocalePack
       Digest::SHA256.hexdigest(data)
     end
 
-    def files
-      @files ||= (YAML.load_file(File.join(LocalePack.config.config_path, self.path))[:files] || []).map do |f|
-        Dir[File.join(LocalePack.config.locale_path, f)]
-      end.flatten
+    def files(raw: false)
+      return file_dependencies if raw
+      @files ||= file_dependencies
     end
 
     def pack
@@ -56,6 +55,12 @@ module LocalePack
     end
 
     private
+
+    def file_dependencies
+      (YAML.load_file(File.join(LocalePack.config.config_path, self.path))[:files] || []).map do |f|
+        Dir[File.join(LocalePack.config.locale_path, f)]
+      end.flatten
+    end
 
     def compiled_file_path
       File.join(LocalePack.config.output_path, "#{self.name}-#{self.digest}.json")
