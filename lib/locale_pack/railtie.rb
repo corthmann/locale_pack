@@ -24,7 +24,26 @@ module LocalePack
       ActionView::Base.send       :include, LocalePack::PackHelper
     end
 
-    initializer 'locale_pack.register_listeners', after: 'locale_pack.configure' do
+    initializer 'locale_pack.development_compile_on_start', after: 'locale_pack.configure' do
+      if Rails.env.development?
+        Rails.logger.info('LocalePack: Deleting all existing compiled packs...')
+        LocalePack.manifest.load!
+        LocalePack.manifest.packs.each do |_, pack|
+          File.delete(File.join(LocalePack.config.output_path, pack[:file_name]))
+        end
+        Rails.logger.info('LocalePack: Compiling all packs...')
+        manifest = LocalePack::Manifest.new
+        LocalePack::PackFile.find_all.each do |pack_file|
+          pack_file.save
+          manifest.add(pack_file.pack)
+        end
+        manifest.save
+        Rails.logger.info('LocalePack: Finished compiling all packs.')
+        LocalePack.manifest.load!
+      end
+    end
+
+    initializer 'locale_pack.development_register_listeners', after: 'locale_pack.development_compile_on_start' do
       if defined?(Listen) && Rails.env.development?
         # Register and start compilation listeners
         LocalePack.listeners << pack_listener
