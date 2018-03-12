@@ -29,7 +29,7 @@ module LocalePack
         Rails.logger.info('LocalePack: Deleting all existing compiled packs...')
         LocalePack.manifest.load!
         LocalePack.manifest.packs.each do |_, pack|
-          File.delete(File.join(LocalePack.config.output_path, pack[:file_name]))
+          File.delete(File.join(LocalePack.config.output_path, pack[:file_name])) if File.exist?(File.join(LocalePack.config.output_path, pack[:file_name]))
         end
         Rails.logger.info('LocalePack: Compiling all packs...')
         manifest = LocalePack::Manifest.new
@@ -113,7 +113,7 @@ module LocalePack
       pack_name = File.basename(path, '.yml')
       pack = LocalePack::Pack.find_by_name(pack_name)
       LocalePack.manifest.remove(pack)
-      File.delete(File.join(LocalePack.config.output_path, pack.file_name))
+      File.delete(File.join(LocalePack.config.output_path, pack.file_name)) if File.exist?(File.join(LocalePack.config.output_path, pack.file_name))
     end
   end
 end
