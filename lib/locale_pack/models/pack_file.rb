@@ -70,7 +70,14 @@ module LocalePack
       return @data if defined?(@data)
       h = {}
       self.files.each do |f|
-        h.deep_merge!(YAML.load_file(f))
+        file_data = YAML.load_file(f)
+        unless file_data
+          if defined?(Rails)
+            Rails.logger.error("LocalePack: Pack '#{self.name}' skipping dependency '#{f}' because the file is invalid.")
+          end
+          next
+        end
+        h.deep_merge!(file_data)
       end
       @data = h.to_json
     end
