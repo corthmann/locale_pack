@@ -1,3 +1,5 @@
 ---
+:packs:
+  - common.yml
 :files:
-  - /*.yml
+  - /a/*.yml
