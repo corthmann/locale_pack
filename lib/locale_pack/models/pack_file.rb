@@ -50,7 +50,7 @@ module LocalePack
 
     def save
       File.open(compiled_file_path, 'w') do |f|
-        f.write("var localePack = JSON.parse(#{data});")
+        f.write("var localePack = #{data};")
       end
     end
 
