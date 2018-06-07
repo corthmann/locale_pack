@@ -50,7 +50,7 @@ module LocalePack
 
     def save
       File.open(compiled_file_path, 'w') do |f|
-        f.write(data)
+        f.write("var localePack = #{data};")
       end
     end
 
@@ -63,7 +63,7 @@ module LocalePack
     end
 
     def compiled_file_path
-      File.join(LocalePack.config.output_path, "#{self.name}-#{self.digest}.json")
+      File.join(LocalePack.config.output_path, "#{self.name}-#{self.digest}.js")
     end
 
     def data

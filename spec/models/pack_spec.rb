@@ -11,7 +11,7 @@ describe LocalePack::Pack do
     it 'sets the locale pack attributes correctly' do
       expect(subject.name).to eq(pack_args[:name])
       expect(subject.digest).to eq(pack_args[:digest])
-      expect(subject.file_name).to eq("#{pack_args[:name]}-#{pack_args[:digest]}.json")
+      expect(subject.file_name).to eq("#{pack_args[:name]}-#{pack_args[:digest]}.js")
     end
   end
 end
