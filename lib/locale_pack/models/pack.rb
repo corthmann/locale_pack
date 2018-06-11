@@ -17,7 +17,7 @@ module LocalePack
     def initialize(options = {})
       @name      = options[:name]
       @digest    = options[:digest]
-      @file_name = "#{options[:name]}-#{options[:digest]}.json"
+      @file_name = "#{options[:name]}-#{options[:digest]}.js"
     end
 
     def path
