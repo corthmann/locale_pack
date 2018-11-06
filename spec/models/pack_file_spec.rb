@@ -14,7 +14,9 @@ describe LocalePack::PackFile do
       expect(subject.path).to eq(pack_args[:path])
     end
     it 'derives the file dependencies correctly' do
-      expect(subject.files).to eq(%w(example_a.da.yml example_a.en.yml).map { |f| File.join(LocalePack.config.locale_path, f) })
+      pack_file_dependencies = %w(common.da.yml common.en.yml).map { |f| File.join(LocalePack.config.locale_path,f) }
+      file_dependencies      = %w(example_a.da.yml example_a.en.yml).map { |f| File.join(LocalePack.config.locale_path,'a', f) }
+      expect(subject.files).to eq(file_dependencies+pack_file_dependencies)
     end
 
     describe '#destroy' do
@@ -44,7 +46,7 @@ describe LocalePack::PackFile do
     it 'returns a list of all pack files' do
       instances = described_class.find_all
       expect(instances).to be_an Array
-      expect(instances.size).to eq(2)
+      expect(instances.size).to eq(3)
       instances.each do |instance|
         expect(instance).to be_a described_class
       end

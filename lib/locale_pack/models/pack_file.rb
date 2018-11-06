@@ -40,8 +40,8 @@ module LocalePack
     end
 
     def files(raw: false)
-      return file_dependencies if raw
-      @files ||= file_dependencies
+      return (file_dependencies+pack_file_dependencies).uniq if raw
+      @files ||= (file_dependencies+pack_file_dependencies).uniq
     end
 
     def pack
@@ -56,8 +56,18 @@ module LocalePack
 
     private
 
+    def pack_source
+      YAML.load_file(File.join(LocalePack.config.config_path, self.path))
+    end
+
+    def pack_file_dependencies
+      (pack_source[:packs] || []).map do |f|
+        LocalePack::PackFile.new(path: f).files
+      end.flatten
+    end
+
     def file_dependencies
-      (YAML.load_file(File.join(LocalePack.config.config_path, self.path))[:files] || []).map do |f|
+      (pack_source[:files] || []).map do |f|
         Dir[File.join(LocalePack.config.locale_path, f)]
       end.flatten
     end
