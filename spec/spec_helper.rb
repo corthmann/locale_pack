@@ -32,10 +32,10 @@ RSpec.configure do |config|
   config.include FactoryBot::Syntax::Methods
   config.before(:suite) do
     FactoryBot.find_definitions
-    LocalePack.configure do |config|
-      config.config_path = File.expand_path('spec/fixtures/locale_packs')
-      config.locale_path = File.expand_path('spec/fixtures/locales')
-      config.output_path = File.expand_path('spec/fixtures/public')
+    LocalePack.configure do |c|
+      c.config_path = File.expand_path('spec/fixtures/locale_packs')
+      c.locale_path = File.expand_path('spec/fixtures/locales')
+      c.output_path = File.expand_path('spec/fixtures/public')
     end
   end
 
