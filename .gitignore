@@ -50,4 +50,6 @@ bower.json
 /spec/coverage/
 
 # Ignore compiled fixture files
-/spec/fixtures/public
+/spec/fixtures/public/*
+# exception to the rule
+!/spec/fixtures/public/.gitkeep
