@@ -13,7 +13,7 @@ module LocalePack
     end
 
     initializer 'locale_pack.configure' do |app|
-      # Configrue LocalePack (defaults set in locale_pack.rb)
+      # Configure LocalePack (defaults set in locale_pack.rb)
       LocalePack.configure do |config|
         config.config_path = app.config.locale_pack[:config_path] if app.config.locale_pack.key?(:config_path)
         config.locale_path = app.config.locale_pack[:locale_path] if app.config.locale_pack.key?(:locale_path)
