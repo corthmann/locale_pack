@@ -18,6 +18,7 @@ module LocalePack
         config.config_path = app.config.locale_pack[:config_path] if app.config.locale_pack.key?(:config_path)
         config.locale_path = app.config.locale_pack[:locale_path] if app.config.locale_pack.key?(:locale_path)
         config.output_path = app.config.locale_pack[:output_path] if app.config.locale_pack.key?(:output_path)
+        config.export_locales = app.config.i18n.available_locales if app.config&.i18n&.available_locales
       end
       # Include Helpers in ActionController and ActionView
       ActionController::Base.send :include, LocalePack::PackHelper
@@ -35,7 +36,9 @@ module LocalePack
         manifest = LocalePack::Manifest.new
         LocalePack::PackFile.find_all.each do |pack_file|
           pack_file.save
-          manifest.add(pack_file.pack)
+          pack_file.packs.each do |pack|
+            manifest.add(pack)
+          end
         end
         manifest.save
         Rails.logger.info('LocalePack: Finished compiling all packs.')
@@ -104,16 +107,23 @@ module LocalePack
       path = f.sub(LocalePack.config.config_path, '')
       pack_file = LocalePack::PackFile.new(path: path)
       pack_file.save
-      LocalePack.manifest.add(pack_file.pack)
+      pack_file.packs.each do |pack|
+        LocalePack.manifest.add(pack)
+      end
     end
 
     def remove_pack(f)
       Rails.logger.info("LocalePack: Removing compiled pack file for '#{f}'")
       path = f.sub(LocalePack.config.config_path, '')
       pack_name = File.basename(path, '.yml')
-      pack = LocalePack::Pack.find_by_name(pack_name)
-      LocalePack.manifest.remove(pack)
-      File.delete(File.join(LocalePack.config.output_path, pack.file_name)) if File.exist?(File.join(LocalePack.config.output_path, pack.file_name))
+      pack_names = [pack_name] + LocalePack.config.export_locales.map do |locale|
+        "#{pack_name}_#{locale}"
+      end
+      pack_names.each do |name|
+        pack = LocalePack::Pack.find_by_name(name)
+        LocalePack.manifest.remove(pack)
+        File.delete(File.join(LocalePack.config.output_path, pack.file_name)) if File.exist?(File.join(LocalePack.config.output_path, pack.file_name))
+      end
     end
   end
 end

@@ -9,7 +9,9 @@ namespace :locale_pack do
       manifest = LocalePack::Manifest.new
       LocalePack::PackFile.find_all.each do |pack_file|
         pack_file.save
-        manifest.add(pack_file.pack)
+        pack_file.packs.each do |pack|
+          manifest.add(pack)
+        end
       end
       manifest.save
     end
@@ -22,7 +24,9 @@ namespace :locale_pack do
       manifest.load!
       pack_file = LocalePack::PackFile.find_by_name(name)
       pack_file.save
-      manifest.add(pack_file.pack)
+      pack_file.packs.each do |pack|
+        manifest.add(pack)
+      end
       manifest.save
     end
   end

@@ -44,11 +44,20 @@ module LocalePack
       @files ||= (file_dependencies+pack_file_dependencies).uniq
     end
 
-    def pack
-      LocalePack::Pack.new(name: self.name, digest: self.digest)
+    def packs
+      pack_list = LocalePack.config.export_locales.map do |locale|
+        LocalePack::Pack.new(name: self.name, digest: self.digest, locale: locale)
+      end
+      pack_list << LocalePack::Pack.new(name: self.name, digest: self.digest)
+      pack_list
     end
 
     def save
+      LocalePack.config.export_locales.each do |locale|
+        File.open(compiled_file_path(locale: locale), 'w') do |f|
+          f.write("var localePack = #{data_for_locale(locale)};")
+        end
+      end
       File.open(compiled_file_path, 'w') do |f|
         f.write("var localePack = #{data};")
       end
@@ -72,8 +81,15 @@ module LocalePack
       end.flatten
     end
 
-    def compiled_file_path
-      File.join(LocalePack.config.output_path, "#{self.name}-#{self.digest}.js")
+    def compiled_file_path(locale: nil)
+      file_name = (locale ?
+                       "#{self.name}_#{locale}-#{self.digest}.js" :
+                       "#{self.name}-#{self.digest}.js")
+      File.join(LocalePack.config.output_path, file_name)
+    end
+
+    def data_for_locale(locale)
+      { locale.to_sym => JSON.parse(data, symbolize_names: true)[locale.to_sym] }.to_json
     end
 
     def data
