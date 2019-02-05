@@ -26,9 +26,27 @@ describe LocalePack::PackFile do
       end
     end
 
-    describe '#pack' do
-      it 'returns a "Pack" object that represents the "PackFile"' do
-        expect(subject.pack).to eq(LocalePack::Pack.new(name: subject.name, digest: subject.digest))
+    describe '#packs' do
+      it 'returns a list of "Pack" objects that represents the "PackFile"' do
+        expect(subject.packs).to be_an Array
+        expect(subject.packs.size).to eq(LocalePack.config.export_locales.size + 1)
+        # Verify that a pack exist for every locale.
+        LocalePack.config.export_locales.each do |locale|
+          expect(subject.packs.detect { |pack| pack.locale == locale }).to be
+        end
+        # Verify that each pack have valid attributes
+        subject.packs.each do |pack|
+          expect(pack.digest).to eq(subject.digest)
+          expect(pack.locale).to satisfy { |locale| locale.nil? || LocalePack.config.export_locales.include?(locale) }
+          if pack.locale
+            expect(pack.id).to eq("#{subject.name}_#{pack.locale}")
+            expect(pack.name).to eq(subject.name)
+          else
+            expect(pack.id).to eq(subject.name)
+            expect(pack.name).to eq(subject.name)
+          end
+          expect(pack.file_name).to eq("#{pack.id}-#{pack.digest}.js")
+        end
       end
     end
 

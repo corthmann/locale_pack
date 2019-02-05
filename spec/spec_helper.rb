@@ -36,6 +36,7 @@ RSpec.configure do |config|
       c.config_path = File.expand_path('spec/fixtures/locale_packs')
       c.locale_path = File.expand_path('spec/fixtures/locales')
       c.output_path = File.expand_path('spec/fixtures/public')
+      c.export_locales = %i{en da}
     end
   end
 

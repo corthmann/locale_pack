@@ -8,7 +8,7 @@ require 'locale_pack/models/pack_file'
 module LocalePack
   class Config
 
-    attr_accessor :output_path, :config_path, :locale_path
+    attr_accessor :output_path, :config_path, :locale_path, :export_locales
 
     def initialize
       if defined?(Rails)
@@ -16,6 +16,7 @@ module LocalePack
         @locale_path = File.join(Rails.root, 'config', 'locales')
         @output_path = File.join(Rails.root, 'public', 'locale_packs')
       end
+      @export_locales = []
     end
   end
 

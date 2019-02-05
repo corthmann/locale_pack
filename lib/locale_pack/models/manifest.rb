@@ -12,11 +12,11 @@ module LocalePack
     end
 
     def add(pack)
-      @packs[pack.name.to_sym] = pack.to_h
+      @packs[pack.id.to_sym] = pack.to_h
     end
 
     def remove(pack)
-      @packs.delete(pack.name.to_sym)
+      @packs.delete(pack.id.to_sym)
     end
 
     def [](name)
