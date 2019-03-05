@@ -12,7 +12,7 @@ module LocalePack
       end
 
       def find_by_name(name)
-        find_all.detect { |file_pack| file_pack.name == name} ||
+        find_all.detect { |file_pack| file_pack.name.to_s == name.to_s} ||
             (raise ArgumentError, "Locale Pack with name '#{name}' not found")
       end
     end
