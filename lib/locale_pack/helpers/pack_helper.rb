@@ -5,7 +5,7 @@ module LocalePack
 
     def javascript_locale_pack_tag(name, locale: nil)
       <<-EOS.html_safe
-      <script type='text/javascript' src='#{locale_pack_path(name, locale: locale)}' />
+      <script type='text/javascript' src='#{locale_pack_path(name, locale: locale)}'></script>
       EOS
     end
 
