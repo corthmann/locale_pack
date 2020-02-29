@@ -22,7 +22,7 @@ GEM
       concurrent-ruby (~> 1.0)
     json (2.1.0)
     minitest (5.11.3)
-    rake (10.5.0)
+    rake (13.0.1)
     rspec (3.7.0)
       rspec-core (~> 3.7.0)
       rspec-expectations (~> 3.7.0)
@@ -56,7 +56,7 @@ DEPENDENCIES
   codeclimate-test-reporter
   factory_bot (~> 4.0)
   locale_pack!
-  rake (~> 10)
+  rake (~> 13)
   rspec (~> 3)
   simplecov (~> 0)
   simplecov-rcov (~> 0)
