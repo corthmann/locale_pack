@@ -13,7 +13,7 @@ Gem::Specification.new do |s|
   s.homepage    = 'https://rubygems.org/gems/locale_pack'
   s.license     = 'MIT'
 
-  s.add_development_dependency('rake', '~> 10')
+  s.add_development_dependency('rake', '~> 13')
   s.add_development_dependency('rspec', '~> 3')
   s.add_development_dependency('simplecov', '~> 0')
   s.add_development_dependency('simplecov-rcov', '~> 0')
