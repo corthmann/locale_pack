@@ -30,9 +30,6 @@ module LocalePack
         locale_file_path = File.join(@output_path, pack.file_name)
 
         if !@locale_packs.key?(locale_file_path) && File.exists?(locale_file_path)
-          Rails.logger.info('LocalePack::Reader: reading & caching content for ' + @output_path)
-          Rails.logger.info('LocalePack::Reader: reading & caching content for ' + locale_file_path)
-
           locale_file = File.file?(locale_file_path)
           return '' unless locale_file
           locale_pack_content = File.read(locale_file_path)
