@@ -62,7 +62,16 @@ module LocalePack
     private
 
     def export_locales(app)
-      app.config&.locale_pack&.locales || app.config&.i18n&.available_locales
+      fallback_locales = app.config&.i18n&.fallbacks
+      available_locales = app.config&.i18n&.available_locales
+
+      if fallback_locales.is_a?(Array)
+        available_locales.union(fallback_locales)
+      elsif fallback_locales.is_a?(Hash)
+        available_locales.union(fallback_locales.values.flatten)
+      else
+        available_locales if fallback_locales.nil?
+      end
     end
 
     def pack_listener
