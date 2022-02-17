@@ -18,7 +18,8 @@ module LocalePack
         config.config_path = app.config.locale_pack[:config_path] if app.config.locale_pack.key?(:config_path)
         config.locale_path = app.config.locale_pack[:locale_path] if app.config.locale_pack.key?(:locale_path)
         config.output_path = app.config.locale_pack[:output_path] if app.config.locale_pack.key?(:output_path)
-        config.export_locales = app.config.i18n.available_locales if app.config&.i18n&.available_locales
+        locales = export_locales(app)
+        config.export_locales = locales unless locales.nil?
       end
       # Include Helpers in ActionController and ActionView
       ActionController::Base.send :include, LocalePack::PackHelper
@@ -60,6 +61,19 @@ module LocalePack
     end
 
     private
+
+    def export_locales(app)
+      fallback_locales = app.config&.i18n&.fallbacks
+      available_locales = app.config&.i18n&.available_locales
+
+      if fallback_locales.is_a?(Array)
+        available_locales.union(fallback_locales)
+      elsif fallback_locales.is_a?(Hash)
+        available_locales.union(fallback_locales.values.flatten)
+      else
+        available_locales if fallback_locales.nil?
+      end
+    end
 
     def pack_listener
       Listen.to(LocalePack.config.config_path, only: /\.yml$/) do |modified, added, removed|
