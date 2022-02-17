@@ -18,7 +18,8 @@ module LocalePack
         config.config_path = app.config.locale_pack[:config_path] if app.config.locale_pack.key?(:config_path)
         config.locale_path = app.config.locale_pack[:locale_path] if app.config.locale_pack.key?(:locale_path)
         config.output_path = app.config.locale_pack[:output_path] if app.config.locale_pack.key?(:output_path)
-        config.export_locales = export_locales(app)
+        locales = export_locales(app)
+        config.export_locales = locales unless locales.nil?
       end
       # Include Helpers in ActionController and ActionView
       ActionController::Base.send :include, LocalePack::PackHelper
