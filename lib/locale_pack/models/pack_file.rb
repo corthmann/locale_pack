@@ -54,12 +54,18 @@ module LocalePack
 
     def save
       LocalePack.config.export_locales.each do |locale|
-        File.open(compiled_file_path(locale: locale), 'w') do |f|
+        File.open(compiled_file_path(locale: locale, extension: 'js'), 'w') do |f|
           f.write("var localePack = #{data_for_locale(locale)};")
         end
+        File.open(compiled_file_path(locale: locale, extension: 'json'), 'w') do |f|
+          f.write(data_for_locale(locale))
+        end
       end
-      File.open(compiled_file_path, 'w') do |f|
+      File.open(compiled_file_path(extension: 'js'), 'w') do |f|
         f.write("var localePack = #{data};")
+      end
+      File.open(compiled_file_path(extension: 'json'), 'w') do |f|
+        f.write(data)
       end
     end
 
@@ -81,10 +87,10 @@ module LocalePack
       end.flatten
     end
 
-    def compiled_file_path(locale: nil)
+    def compiled_file_path(locale: nil, extension: 'js')
       file_name = (locale ?
-                       "#{self.name}_#{locale}-#{self.digest}.js" :
-                       "#{self.name}-#{self.digest}.js")
+                       "#{self.name}_#{locale}-#{self.digest}.#{extension}" :
+                       "#{self.name}-#{self.digest}.#{extension}")
       File.join(LocalePack.config.output_path, file_name)
     end
 

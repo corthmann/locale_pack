@@ -27,6 +27,7 @@ module LocalePack
     def load!
       manifest_file = find_directory_manifest(LocalePack.config.output_path)
       return unless File.exist?(manifest_file)
+
       @packs = JSON.parse(File.read(manifest_file), symbolize_names: true)
     end
 
