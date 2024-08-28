@@ -20,11 +20,22 @@ module LocalePack
       @name      = options[:name]
       @digest    = options[:digest]
       @locale    = options[:locale]
-      @file_name = "#{@id}-#{options[:digest]}.js"
+      @file_name = "#{@id}-#{options[:digest]}"
     end
 
-    def path
-      "/locale_packs/#{self.file_name}"
+    def path(extension: 'js')
+      return ArgumentError, "invalid locale pack file extension" unless %w(js json).include?(extension)
+
+      "/locale_packs/#{self.file_name}.#{extension}"
+    end
+
+    def json_content
+      return @content if defined?(@content) && @content
+
+      json_path = File.join(LocalePack.config.output_path, "#{self.file_name}.json")
+      return '' unless File.exist?(json_path)
+
+      @content = File.read(json_path)
     end
 
     def ==(another_pack)
